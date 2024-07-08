@@ -26,14 +26,14 @@ type Error struct {
 
 // error response func
 func writeError(w http.ResponseWriter, message string, code int) {
-	response := Error{
+	errorResponse := Error{
 		Code:    code,
 		Message: message,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
-	json.NewEncoder(w).Encode(response)
+	json.NewEncoder(w).Encode(errorResponse)
 }
 
 var (

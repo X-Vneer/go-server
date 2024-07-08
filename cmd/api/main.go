@@ -1,8 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"net/http"
+	"os"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	log "github.com/sirupsen/logrus"
@@ -11,15 +14,25 @@ import (
 
 func main() {
 
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Server running port: ")
+	PORT, readerError := reader.ReadString('\n')
+	PORT = strings.TrimSpace(PORT)
+
+	if readerError != nil {
+		fmt.Println("Could not read")
+		return
+	}
+
 	log.SetReportCaller(true)
 
-	var r *chi.Mux = chi.NewRouter()
+	r := chi.NewRouter()
 
 	handlers.Handler(r)
 
-	fmt.Println("Starting GO API service ...")
+	fmt.Printf("Starting GO API service ... at port: %v\n", PORT)
 
-	err := http.ListenAndServe("localhost:3000", r)
+	err := http.ListenAndServe("localhost:"+PORT, r)
 
 	if err != nil {
 		log.Error(err)
